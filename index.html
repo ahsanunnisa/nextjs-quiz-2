@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">       
+    <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <link rel="stylesheet" href="styles.css"/>
+  <script type="text/babel">
+    
+    function App() {
+      
+      const [forminputs,setFormInputs] = React.useState({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        service: 'development',
+        budget: '50000'
+      })
+
+      function handleNameChange(event){
+        setFormInputs({...forminputs,
+          name:event.target.value
+        })
+      }
+      function handleEmailChange(event){
+        setFormInputs({...forminputs,
+          email:event.target.value
+        })
+      }
+      function handlePhnumberChange(event){
+        setFormInputs({...forminputs,
+          phone:event.target.value
+        })
+      }
+      function handleCompanyChange(event){
+        setFormInputs({...forminputs,
+          company:event.target.value
+        })
+      }
+      const handleServiceDevelopment = event => {
+        setFormInputs({...forminputs,
+          service:'development'
+        })    
+      }
+      const handleServiceWebDesign = event => {
+        setFormInputs({...forminputs,
+          service:'webdesign'
+        })       
+      }
+      const handleServiceMarketing = event => {
+        setFormInputs({...forminputs,
+          service:'marketing'
+        })      
+      }
+      const handleServiceOther = event => {
+        
+        console.log(forminputs.service) 
+        setFormInputs({...forminputs,
+          service:'other'
+        })   
+        console.log(forminputs.service)     
+      }
+      const handleBudget5000 = event => {
+        setFormInputs({...forminputs,
+          budget:'5000'
+        })        
+      }
+      const handleBudget10000 = event => {
+        setFormInputs({...forminputs,
+          budget:'10000'
+        })
+      }
+      const handleBudget20000 = event => {
+        setFormInputs({...forminputs,
+          budget:'20000'
+        })
+      }
+      const handleBudget50000 = event => {
+        setFormInputs({...forminputs,
+          budget:'50000'
+        })
+      }
+
+      const [valid, setValid] = React.useState({
+        name: false,
+        email: false,
+        phone: false,
+        company: false
+      })
+
+      function handleNameBlur(event){setValid({...valid, name: forminputs.name != ''})}
+      
+
+      const email_pattern = new RegExp('^[a-zA-Z0-9](\.?[a-zA-Z0-9]){0,}@gmail\.com$')
+      function handleEmailBlur(event){setValid({...valid, email: email_pattern.test(forminputs.email)})}
+      
+      const phone_pattern = new RegExp('^08[0-9]{6,10}$')
+      function handlePhnumberBlur(event){setValid({...valid, phone: phone_pattern.test(forminputs.phone)})}
+    
+      function handleCompanyBlur(event){setValid({...valid, company: forminputs.company != ''})}
+      
+      const handleClickSubmit = event => {
+        alert(JSON.stringify(forminputs))
+      }
+      
+      const [nameerr, setNameErr] = React.useState(false)        
+      const [emailerr, setEmailErr] = React.useState(false)       
+      const [phoneerr, setPhnumberErr] = React.useState(false)       
+      const [companyerr, setCompanyErr] = React.useState(false) 
+      
+
+      const [page, setPage] = React.useState(1)
+      
+      const handleClickNext = event => {
+        if (page==1){
+          setNameErr(false)
+          setEmailErr(false)
+          setPhnumberErr(false)
+          setCompanyErr(false)
+
+          if (!valid.name) {
+            document.getElementById('nameinput').focus()
+            document.getElementById('nameinput').border='1px solid #962DFF'
+            setNameErr(true)
+          } else if (!valid.email) {
+            document.getElementById('emailinput').focus()
+            setEmailErr(true)
+          } else if (!valid.phone) {
+            document.getElementById('phoneinput').focus()
+            setPhnumberErr(true)
+          } else if (!valid.company) {
+            document.getElementById('companyinput').focus()
+            setCompanyErr(true)
+          } else {
+            setPage(+page+1)
+          }
+        } else setPage(+page+1)
+        console.log(valid)
+      }
+      const handleClickPrevious = event => setPage(+page-1)
+     
+
+
+
+      return (
+        <div className='main'>
+          <div>
+            <div className='heading'>Get a project quote</div>
+            <div className='headingdesc'>Please fill the form below to receive a quote for your project. Feel free to add as much detail as needed.</div>
+
+              <div className='white-box'>
+                
+
+
+                <div className='page' style={{display: page==1 ? 'block' : 'none' }}>
+                  <img className='progress-bar' src='Assets/progress-bar-1.png'/>
+                  <div className='sep-line'></div>
+                  <div className='title'>Contact details</div>
+                  <div className='desc'>Lorem ipsum dolor sit amet consectetur adipisc.</div>
+                  <form>    
+                    <div className='formpage'>            
+                      <div className='question'>
+                        <label className={nameerr?'label1-error':'label1'} htmlFor='nameinput'>Name</label>
+                        <input className='input1' id='nameinput' type='text' placeholder='Name' onChange={handleNameChange} onBlur={handleNameBlur}/>
+                        <div className='error1' id='nameerror' style={{display: nameerr ? 'block' : 'none' }}>Name is required</div>
+                      </div>
+                      <div className='question'>
+                        <label className={emailerr?'label1-error':'label1'} htmlFor='emailinput'>Email</label>
+                        <input className='input1' id='emailinput' type='text' placeholder='Email' onChange={handleEmailChange} onBlur={handleEmailBlur}/>
+                        <div className='error1' id='emailerror' style={{display: emailerr ? 'block' : 'none' }}>Please input a Gmail address</div>
+                      </div>
+                      <div className='question'>
+                        <label className={phoneerr?'label1-error':'label1'} htmlFor='phoneinput'>Phone Number</label>
+                        <input className='input1' id='phoneinput' type='text' placeholder='Phone Number'onChange={handlePhnumberChange} onBlur={handlePhnumberBlur}/>
+                        <div className='error1' id='phoneerror' style={{display: phoneerr ? 'block' : 'none' }}>Phone number format: 08xxxxxx, 8-12 digits</div>
+                      </div>
+                      <div className='question'>
+                        <label className={companyerr?'label1-error':'label1'} htmlFor='companyinput'>Company</label>
+                        <input className='input1' id='companyinput' type='text' placeholder='Company' onChange={handleCompanyChange} onBlur={handleCompanyBlur}/>
+                        <div className='error1' id='companyerror' style={{display: companyerr ? 'block' : 'none' }}>Company is required</div>
+                      </div>
+                    </div>
+                  </form>  
+                  
+                </div>
+                <div className='page' style={{display: page==2 ? 'block' : 'none' }}>
+                  <img className='progress-bar' src='Assets/progress-bar-2.png'/>
+                  <div className='sep-line'></div>
+                  <div className='title'>Our services</div>
+                  <div className='desc'>Please select which service you are interested in.</div>
+                  <form >
+                    <div className='formpage'>             
+                      <div className={forminputs.service === 'development'?'button-selected':'button-unselected'} onClick={handleServiceDevelopment}>
+                        <div className='dev-base'>
+                          <img className='dev-1' src='Assets/development_1.png'/>
+                          <img className='dev-2' src='Assets/development_2.png'/>
+                          <img className='dev-3' src='Assets/development_3.png'/>
+                        </div>
+                        <div className='srvtext'>Development</div>
+                      </div>
+                      <div type='button' className={forminputs.service === 'webdesign'?'button-selected':'button-unselected'} onClick={handleServiceWebDesign}>
+                        <div className='dev-base'>
+                          <img className='dev-1' src='Assets/webdesign_1.png'/>
+                          <img className='dev-2' src='Assets/webdesign_2.png'/>
+                          <img className='dev-3' src='Assets/webdesign_3.png'/>
+                        </div>
+                        
+                        <div className='srvtext'>Web Design</div>
+                      </div>
+                      <div type='button' className={forminputs.service === 'marketing'?'button-selected':'button-unselected'} onClick={handleServiceMarketing}>
+                        <div className='dev-base'>
+                          <img className='dev-1' src='Assets/marketing_1.png'/>
+                          <img className='dev-2' src='Assets/marketing_2.png'/>
+                          <img className='dev-3' src='Assets/marketing_3.png'/>
+                        </div>
+                        
+                        <div className='srvtext'>Marketing</div>
+                      </div>
+                      <div type='button' className={forminputs.service === 'other'?'button-selected':'button-unselected'} onClick={handleServiceOther}>
+                        <div className='dev-base'>
+                          <img className='dev-1' src='Assets/other_1.png'/>
+                          <img className='dev-2' src='Assets/other_2.png'/>
+                          <img className='other-3' src='Assets/other_3.png'/>
+                        </div>
+                        
+                        <div className='srvtext'>Other</div>
+                      </div>
+                    
+                    </div>
+                  </form>
+                </div>
+                
+                <div className='page' style={{display: page==3 ? 'block' : 'none' }}>
+                  <img className='progress-bar' src='Assets/progress-bar-3.png'/>
+                  <div className='sep-line'></div>
+                  <div className='title'>What's your project budget?</div>
+                  <div className='desc'>Please select the project budget range you have in mind.</div>
+                    <div className='formpage'>
+                                   
+                      <div className={forminputs.budget === '5000'?'option button-selected':'option button-unselected'} onClick={handleBudget5000}>
+                        <span className='option'><img className={forminputs.budget === '5000'?'button-selected-img':'button-unselected-img'}/>
+                        <span className='budgettext'>$5.000 - $10.000</span></span>
+                      </div>
+                      <div className={forminputs.budget === '10000'?'option button-selected':'option button-unselected'} onClick={handleBudget10000}>
+                        <span className='option'><img className={forminputs.budget === '10000'?'button-selected-img':'button-unselected-img'}/>
+                        <span className='budgettext'>$10.000 - $20.000</span></span>
+                      </div>
+                      <div className={forminputs.budget === '20000'?'option button-selected':'option button-unselected'} onClick={handleBudget20000}>
+                        <span className='option'><img className={forminputs.budget === '20000'?'button-selected-img':'button-unselected-img'}/>
+                        <span className='budgettext'>$20.000 - $50.000</span></span>
+                      </div>
+                      <div className={forminputs.budget === '50000'?'option button-selected':'option button-unselected'} onClick={handleBudget50000}>
+                        <span className='option'><img className={forminputs.budget === '50000'?'button-selected-img':'button-unselected-img'}/>
+                        <span className='budgettext'>$50.000 +</span></span>
+                      </div>
+                    </div>
+                </div>
+                <div className='page' style={{display: page==4 ? 'block' : 'none' }}>
+                  <img className='progress-bar' src='Assets/progress-bar-4.png'/>
+                  <div className='sep-line'></div>
+                  <div className='submit-page'>
+                    <img src='Assets/submit.png'/>
+                    <div className='title'>Submit your quote request</div>
+                    <div className='desc-submit'>Please review all the information you previously typed in the past steps, and if all is okay, submit your message to receive a project quote in 24 - 48 hours.</div>
+                    <button type='button' className='submit-button' onClick={handleClickSubmit}>Submit</button>            
+                  </div>
+                </div>
+
+              </div>
+
+              <form>
+                <div id='prevnext'>
+                  <button className='previousbutton' type='button' onClick={handleClickPrevious} style={{display: page>1 ? 'block' : 'none' }}>Previous Step</button>            
+                  <button className='nextbutton' type='button' onClick={handleClickNext} style={{display: page<4 ? 'block' : 'none' }}>Next Step</button>
+                </div>
+              </form>
+            </div>
+        </div>
+      
+      )
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'))
+  </script>
+</body>
+
+</html>
