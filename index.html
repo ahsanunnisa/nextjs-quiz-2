@@ -13,9 +13,20 @@
   <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
   <link rel="stylesheet" href="styles.css"/>
   <script type="text/babel">
-    
     function App() {
       
+      const nameLabelRef = React.useRef();
+      const emailLabelRef = React.useRef();
+      const phoneLabelRef = React.useRef();
+      const companyLabelRef = React.useRef();
+      const nameRef = React.useRef();
+      const emailRef = React.useRef();
+      const phoneRef = React.useRef();
+      const companyRef = React.useRef();
+      const nameErrRef = React.useRef();
+      const emailErrRef = React.useRef();
+      const phoneErrRef = React.useRef();
+      const companyErrRef = React.useRef();
       const [forminputs,setFormInputs] = React.useState({
         name: '',
         email: '',
@@ -25,26 +36,19 @@
         budget: '50000'
       })
 
-      function handleNameChange(event){
+      const [errors,setErrors] = React.useState({
+        name: 'Name is required',
+        email: 'Email is required',
+        phone: 'Phone number is required',
+        company: 'Company is required'
+      })
+      
+      function handleChange(event){
         setFormInputs({...forminputs,
-          name:event.target.value
+          [event.target.name]:event.target.value
         })
       }
-      function handleEmailChange(event){
-        setFormInputs({...forminputs,
-          email:event.target.value
-        })
-      }
-      function handlePhnumberChange(event){
-        setFormInputs({...forminputs,
-          phone:event.target.value
-        })
-      }
-      function handleCompanyChange(event){
-        setFormInputs({...forminputs,
-          company:event.target.value
-        })
-      }
+
       const handleServiceDevelopment = event => {
         setFormInputs({...forminputs,
           service:'development'
@@ -61,13 +65,11 @@
         })      
       }
       const handleServiceOther = event => {
-        
-        console.log(forminputs.service) 
         setFormInputs({...forminputs,
           service:'other'
-        })   
-        console.log(forminputs.service)     
+        })     
       }
+
       const handleBudget5000 = event => {
         setFormInputs({...forminputs,
           budget:'5000'
@@ -89,62 +91,74 @@
         })
       }
 
-      const [valid, setValid] = React.useState({
-        name: false,
-        email: false,
-        phone: false,
-        company: false
-      })
 
-      function handleNameBlur(event){setValid({...valid, name: forminputs.name != ''})}
+      function handleNameBlur(event){
+        forminputs.name != ''? setErrors({...errors, name:null}) : setErrors({...errors, name:'Name is required'})
+        
+      }
       
 
       const email_pattern = new RegExp('^[a-zA-Z0-9](\.?[a-zA-Z0-9]){0,}@gmail\.com$')
-      function handleEmailBlur(event){setValid({...valid, email: email_pattern.test(forminputs.email)})}
+      function handleEmailBlur(event){
+        if (forminputs.email != '') {
+          if (email_pattern.test(forminputs.email)) {
+            setErrors({...errors, email:null})
+          } else setErrors({...errors, email:'Email is invalid'})
+        } else setErrors({...errors, email:'Email is required'})
+      }
       
       const phone_pattern = new RegExp('^08[0-9]{6,10}$')
-      function handlePhnumberBlur(event){setValid({...valid, phone: phone_pattern.test(forminputs.phone)})}
+      function handlePhnumberBlur(event){
+        if (forminputs.phone != '') {
+          if (phone_pattern.test(forminputs.phone)) {
+            setErrors({...errors, phone:null})
+          } else setErrors({...errors, phone:'Phone number is invalid'})
+        } else setErrors({...errors, phone:'Phone number is required'})
+      }
     
-      function handleCompanyBlur(event){setValid({...valid, company: forminputs.company != ''})}
+      function handleCompanyBlur(event){
+        forminputs.company != ''? setErrors({...errors, company:null}) : setErrors({...errors, company:'Company is required'})
+      }
       
       const handleClickSubmit = event => {
         alert(JSON.stringify(forminputs))
       }
       
-      const [nameerr, setNameErr] = React.useState(false)        
-      const [emailerr, setEmailErr] = React.useState(false)       
-      const [phoneerr, setPhnumberErr] = React.useState(false)       
-      const [companyerr, setCompanyErr] = React.useState(false) 
-      
 
       const [page, setPage] = React.useState(1)
       
-      const handleClickNext = event => {
+      const validateInput = () => {
         if (page==1){
-          setNameErr(false)
-          setEmailErr(false)
-          setPhnumberErr(false)
-          setCompanyErr(false)
-
-          if (!valid.name) {
-            document.getElementById('nameinput').focus()
-            document.getElementById('nameinput').border='1px solid #962DFF'
-            setNameErr(true)
-          } else if (!valid.email) {
-            document.getElementById('emailinput').focus()
-            setEmailErr(true)
-          } else if (!valid.phone) {
-            document.getElementById('phoneinput').focus()
-            setPhnumberErr(true)
-          } else if (!valid.company) {
-            document.getElementById('companyinput').focus()
-            setCompanyErr(true)
+          nameLabelRef.current.classList='label1'  
+          emailLabelRef.current.classList='label1'
+          phoneLabelRef.current.classList='label1'
+          companyLabelRef.current.classList='label1'
+          nameErrRef.current.classList='hidden-error'  
+          emailErrRef.current.classList='hidden-error' 
+          phoneErrRef.current.classList='hidden-error' 
+          companyErrRef.current.classList='hidden-error'      
+          if (errors.name) {
+            nameRef.current.focus()            
+            nameErrRef.current.classList='error1'            
+            nameLabelRef.current.classList='label1-error' 
+          } else if (errors.email) {
+            emailRef.current.focus()  
+            emailErrRef.current.classList='error1'  
+            emailLabelRef.current.classList='label1-error' 
+          } else if (errors.phone) {
+            phoneRef.current.focus()            
+            phoneErrRef.current.classList='error1'  
+            phoneLabelRef.current.classList='label1-error' 
+          } else if (errors.company) {
+            companyRef.current.focus()                  
+            companyErrRef.current.classList='error1'  
+            companyLabelRef.current.classList='label1-error' 
           } else {
             setPage(+page+1)
           }
         } else setPage(+page+1)
-        console.log(valid)
       }
+      
       const handleClickPrevious = event => setPage(+page-1)
      
 
@@ -168,24 +182,24 @@
                   <form>    
                     <div className='formpage'>            
                       <div className='question'>
-                        <label className={nameerr?'label1-error':'label1'} htmlFor='nameinput'>Name</label>
-                        <input className='input1' id='nameinput' type='text' placeholder='Name' onChange={handleNameChange} onBlur={handleNameBlur}/>
-                        <div className='error1' id='nameerror' style={{display: nameerr ? 'block' : 'none' }}>Name is required</div>
+                        <label className={'label1'} htmlFor='nameinput' ref={nameLabelRef}>Name</label>
+                        <input className='input1' id='nameinput' name='name' ref={nameRef} type='text' placeholder='Name' onChange={handleChange} onBlur={handleNameBlur} />
+                        <div className='hidden-error' ref={nameErrRef}>{errors.name}</div>
                       </div>
                       <div className='question'>
-                        <label className={emailerr?'label1-error':'label1'} htmlFor='emailinput'>Email</label>
-                        <input className='input1' id='emailinput' type='text' placeholder='Email' onChange={handleEmailChange} onBlur={handleEmailBlur}/>
-                        <div className='error1' id='emailerror' style={{display: emailerr ? 'block' : 'none' }}>Please input a Gmail address</div>
+                        <label className={'label1'} htmlFor='emailinput' ref={emailLabelRef}>Email</label>
+                        <input className='input1' id='emailinput' name='email' ref={emailRef} type='text' placeholder='Email' onChange={handleChange} onBlur={handleEmailBlur} />
+                        <div className='hidden-error' ref={emailErrRef}>{errors.email}</div>
                       </div>
                       <div className='question'>
-                        <label className={phoneerr?'label1-error':'label1'} htmlFor='phoneinput'>Phone Number</label>
-                        <input className='input1' id='phoneinput' type='text' placeholder='Phone Number'onChange={handlePhnumberChange} onBlur={handlePhnumberBlur}/>
-                        <div className='error1' id='phoneerror' style={{display: phoneerr ? 'block' : 'none' }}>Phone number format: 08xxxxxx, 8-12 digits</div>
+                        <label className={'label1'} htmlFor='phoneinput' ref={phoneLabelRef}>Phone Number</label>
+                        <input className='input1' id='phoneinput' name='phone' ref={phoneRef} type='text' placeholder='Phone Number'onChange={handleChange} onBlur={handlePhnumberBlur} />
+                        <div className='hidden-error' ref={phoneErrRef}>{errors.phone}</div>
                       </div>
                       <div className='question'>
-                        <label className={companyerr?'label1-error':'label1'} htmlFor='companyinput'>Company</label>
-                        <input className='input1' id='companyinput' type='text' placeholder='Company' onChange={handleCompanyChange} onBlur={handleCompanyBlur}/>
-                        <div className='error1' id='companyerror' style={{display: companyerr ? 'block' : 'none' }}>Company is required</div>
+                        <label className={'label1'} htmlFor='companyinput' ref={companyLabelRef}>Company</label>
+                        <input className='input1' id='companyinput' name='company' ref={companyRef} type='text' placeholder='Company' onChange={handleChange} onBlur={handleCompanyBlur}/>
+                        <div className='hidden-error' ref={companyErrRef}>{errors.company}</div>
                       </div>
                     </div>
                   </form>  
@@ -279,7 +293,7 @@
               <form>
                 <div id='prevnext'>
                   <button className='previousbutton' type='button' onClick={handleClickPrevious} style={{display: page>1 ? 'block' : 'none' }}>Previous Step</button>            
-                  <button className='nextbutton' type='button' onClick={handleClickNext} style={{display: page<4 ? 'block' : 'none' }}>Next Step</button>
+                  <button className='nextbutton' type='button' onClick={validateInput} style={{display: page<4 ? 'block' : 'none' }}>Next Step</button>
                 </div>
               </form>
             </div>
